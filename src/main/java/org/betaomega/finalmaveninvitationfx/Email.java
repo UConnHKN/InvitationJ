@@ -24,24 +24,76 @@
 package org.betaomega.finalmaveninvitationfx;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import java.io.InputStream;
+import javax.activation.DataHandler;
+import javax.mail.BodyPart;
+import javax.mail.Multipart;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
  * @author jforce
  * 
- * Takes in the address to send to, the subject, body, and any attachments.
+ * Takes in the address to send to, the subject, body, and the invitation
  */
 public class Email {
     private String address;
     private String subject;
     private String body;
-    private File[] attachments;
-    public Email(String address, String subject, String body, File[] attachments){
+    private String invitationPath;
+    public Email(String address, String subject, String body, String invitationPath){
         this.address = address;
         this.subject = subject;
         this.body = body;
-        this.attachments = attachments;
+        this.invitationPath = invitationPath;
         
+    }
+    public void send(String fromAddress, String password, String invitationName, String invitationMimeType) throws InvitationNotFoundException
+    
+  {
+        
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(fromAddress));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(this.address));
+            message.setSubject(this.getSubject());
+            File invitation = new File(this.invitationPath);
+            
+            MimeBodyPart invitationMime = new MimeBodyPart();
+            InputStream invitationDS = new FileInputStream(invitation);
+            invitationMime.setFileName(invitationName);
+            invitationMime.setContent(invitationDS, invitationMimeType);
+            Multipart messageMultiPart = new MimeMultipart();
+            //now create the body
+            MimeBodyPart mBody = new MimeBodyPart();
+            mBody.setText(this.getBody());
+            messageMultiPart.addBodyPart(mBody);
+            messageMultiPart.addBodyPart(invitationMime);
+            message.setContent(messageMultiPart);
+            Transport.send(message, fromAddress, password);
+        }   catch (MessagingException ex) {
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (FileNotFoundException ex) {
+            throw new InvitationNotFoundException();
+        }
     }
 
     /**
@@ -86,17 +138,5 @@ public class Email {
         this.body = body;
     }
 
-    /**
-     * @return the attachments
-     */
-    public File[] getAttachments() {
-        return attachments;
-    }
-
-    /**
-     * @param attachments the attachments to set
-     */
-    public void setAttachments(File[] attachments) {
-        this.attachments = attachments;
-    }
+   
 }
