@@ -55,7 +55,7 @@ public class ColumnVariableMap {
         }
         return values;
     }
-    public HashMap<String, String> getBodyVarableValues(String[] row){
+    public HashMap<String, String> getBodyVariableValues(String[] row){
         HashMap<String, String> values = new HashMap<String, String>();
         for(String key : this.bodyMap.keySet()){
             int index = (int) this.bodyMap.get(key);

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane dividerPositions="0.25879396984924624" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+  <items>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Text layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please Enter Command For Libreoffice: " />
+            <TextField layoutX="226.0" layoutY="37.0" prefHeight="25.0" prefWidth="312.0" />
+         </children>
+      </AnchorPane>
+    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="163.0" prefWidth="598.0">
+         <children>
+            <HBox prefHeight="100.0" prefWidth="200.0" />
+            <Text layoutX="69.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select spreadsheet with potential members:" />
+            <Button layoutX="331.0" layoutY="96.0" mnemonicParsing="false" text="Click here" />
+            <Button layoutX="272.0" layoutY="219.0" mnemonicParsing="false" prefHeight="45.0" prefWidth="81.0" text="Next" />
+         </children></AnchorPane>
+  </items>
+</SplitPane>

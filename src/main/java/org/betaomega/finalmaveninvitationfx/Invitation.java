@@ -33,8 +33,6 @@ import org.odftoolkit.simple.common.navigation.InvalidNavigationException;
 import org.odftoolkit.simple.common.navigation.Selection;
 import org.odftoolkit.simple.common.navigation.TextNavigation;
 import org.odftoolkit.simple.common.navigation.TextSelection;
-import org.odftoolkit.odfdom.converter.pdf.PdfConverter;
-import org.odftoolkit.odfdom.converter.pdf.PdfOptions;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
 
 /**

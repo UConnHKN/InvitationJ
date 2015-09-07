@@ -116,6 +116,12 @@
             <artifactId>odfdom-java</artifactId>
             <version>0.8.10-incubating</version>
             <classifier>jar-with-dependencies</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-digester</groupId>
+                    <artifactId>commons-digester</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
@@ -123,24 +129,15 @@
             <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>com.github.livesense</groupId>
-            <artifactId>org.liveSense.framework.xdocreport</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>org.odftoolkit.odfdom.converter.pdf</artifactId>
-            <version>1.0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openoffice</groupId>
-            <artifactId>unoil</artifactId>
-            <version>3.2.1</version>
-        </dependency>
-        <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
             <version>1.5.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.activation</groupId>
+                    <artifactId>activation</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 </project>
