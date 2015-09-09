@@ -11,8 +11,10 @@ package org.betaomega.finalmaveninvitationfx;
  */
 public class Person implements Comparable<Object>{
     private String email;
+    private String[] row;
     public Person(ColumnVariableMap columnMap, String[] row){
         this.setEmail(columnMap.getEmail(row));
+        this.row = row;
     }
     public Person(String email){
         this.setEmail(email);
@@ -53,5 +55,9 @@ public class Person implements Comparable<Object>{
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+    @Override
+    public String toString(){
+       return this.email; 
     }
 }

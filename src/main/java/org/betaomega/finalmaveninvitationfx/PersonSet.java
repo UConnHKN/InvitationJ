@@ -7,6 +7,7 @@ package org.betaomega.finalmaveninvitationfx;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  *
@@ -19,10 +20,13 @@ public class PersonSet extends HashSet {
     */
     public PersonSet(HashMap<String, ColumnVariableMap> sheetToCVPMap, HashMap<String, String[][]> spreadsheetData){
         for(String sheetName : spreadsheetData.keySet()){
+            System.out.println("Sheetname: " + sheetName);
+            
             ColumnVariableMap cvp = sheetToCVPMap.get(sheetName);
             String[][] sheetData = spreadsheetData.get(sheetName);
             for(String[] row : sheetData){
                 Person p = new Person(cvp, row);
+                System.out.println("Person to add: " + p.toString());
                 this.add(p);
             }
         }
@@ -39,4 +43,12 @@ public class PersonSet extends HashSet {
         }
     }
     
+    public HashSet<String> getEmailAddresses(){
+        Iterator<Person> iter = this.iterator();
+        HashSet<String> addresses = new HashSet<String>();
+        while(iter.hasNext()){
+            addresses.add(((Person) iter.next()).getEmail());
+        }
+        return addresses;
+    }
 }
