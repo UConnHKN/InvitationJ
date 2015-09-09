@@ -107,7 +107,50 @@ public class InviteeSpreadsheet {
         }
         return headers;
     }
-    
+    public HashMap<String, ColumnVariableMap> getHeaderSpecifiedCVMs(){
+        HashMap<String, ColumnVariableMap> columnVarMaps = new HashMap<String, ColumnVariableMap>();
+        HashMap<String, String[]> headers = this.getHeaders();
+        int emailIndex;
+        HashMap<String, Integer> subjectMap, bodyMap, invitationMap;
+        
+        for(String sheetName : headers.keySet()){
+            int columnIndex = 0;
+            emailIndex = 0;
+            subjectMap = new HashMap<String, Integer>();
+            bodyMap = new HashMap<String, Integer>();
+            invitationMap = new HashMap<String, Integer>();
+            
+            for(String cellText : headers.get(sheetName)){
+                if(cellText.length() > 0){
+                    String[] tokens = cellText.split(",");
+                    //each token should be of format BODY:VARIABLENAME or SUBJECT:VARIABLENAME or INVITATION:VARIABLENAME or EMAIL
+                    for(int i = 0; i < tokens.length; i++){
+                        tokens[i] = tokens[i].trim();
+                        if(tokens[i].equals("EMAIL")){
+                            emailIndex = columnIndex;
+                        }else{
+                            String[] halves = tokens[i].split(":");
+                            if(halves[0].equals("SUBJECT")){
+                                subjectMap.put(halves[1], columnIndex);
+                            }else if(halves[0].equals("BODY")){
+                                bodyMap.put(halves[1], columnIndex);
+                            }else if(halves[0].equals("INVITATION")){
+                                bodyMap.put(halves[1], columnIndex);
+                            }else{
+                                //DO SOMETHING BAD HERE!
+                            }
+                        }
+                    }
+                    
+                }
+                
+                columnIndex++;
+            }
+            ColumnVariableMap cvm = new ColumnVariableMap(emailIndex, subjectMap, bodyMap, invitationMap);
+            columnVarMaps.put(sheetName, cvm);
+        }
+        return columnVarMaps;
+    }
     public String[] getSheetNames(){
         //first, get the number of sheets in the spreadsheet. We'll iterate from [0, 1, ..., n - 1], and get the name of each sheet.
         int numSheets = this.spreadsheet.getSheetCount();
@@ -119,7 +162,4 @@ public class InviteeSpreadsheet {
         return sheetNames;
     } 
  
-    public static ColumnVariableMap getHeaderInfo(String[] row){
-        
-    }
 }

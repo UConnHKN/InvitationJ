@@ -6,7 +6,13 @@
 package org.betaomega.finalmaveninvitationfx;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,7 +95,24 @@ public class MainApp {
             
             startingRow.put(sheetName, 1);
         }
-        //now, for each of the 
+        HashMap<String, ColumnVariableMap> columnVarMaps = spreadsheet.getHeaderSpecifiedCVMs();
+        HashMap<String, String[][]> data = spreadsheet.getAllData(startingRow);
+        PersonSet persons = new PersonSet(columnVarMaps, data);
+        String subjectText = "";
+        try {
+            subjectText = new String(Files.readAllBytes(Paths.get(args[3])), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            System.out.println("Could not read text from subject file. Check your spelling.");
+        }
+        String bodyText = "";
+        try {
+            bodyText = new String(Files.readAllBytes(Paths.get(args[2])), StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            System.out.println("Could not read text from body file. Check your spelling.");
+        }
+        
+        EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", "jordan.force@uconn.edu", "not that dumb", "application/pdf", "invitation.pdf");
+        persons.sendEmails(subjectText, bodyText, args[1], eInfo);
     }
     
 }
