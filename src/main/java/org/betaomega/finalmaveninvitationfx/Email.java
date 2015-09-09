@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.mail.*;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -39,6 +40,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import javax.activation.DataHandler;
 import javax.mail.BodyPart;
 import javax.mail.Multipart;
@@ -63,45 +65,50 @@ public class Email {
         this.invitationPath = invitationPath;
         
     }
-    public void send(String fromAddress, String password, String invitationName, String invitationMimeType) throws InvitationNotFoundException
+    public void send(String fromAddress, String password, String invitationName, String invitationMimeType) throws InvitationNotFoundException, UnsupportedEncodingException
     
   {
+        EmailAttachment attachment = new EmailAttachment();
+        attachment.setPath(this.invitationPath);
+        attachment.setDisposition(EmailAttachment.ATTACHMENT);
+        attachment.setName(invitationName);
+        MultiPartEmail email = new MultiPartEmail();
+        email.setHostName("smtp.gmail.com");
+        email.setSmtpPort(587);
+        email.setAuthenticator(new DefaultAuthenticator(fromAddress, password));
+        email.setStartTLSEnabled(true);
         
-        Properties props = new Properties();
-        Session session = Session.getDefaultInstance(props, null);
 
+
+        email.setTLS(true);
+        email.setHostName("smtp.gmail.com");
         try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(fromAddress));
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(this.address));
-            message.setSubject(this.getSubject());
-            System.out.println("Invitation path: " + this.invitationPath);
-            this.invitationPath = "thing1524829128976613409.pdf";
-            File invitation = new File(this.invitationPath);
-            System.out.println("Invitation file: " + invitation.getAbsolutePath());
-            System.out.println("Current dir: " + System.getProperty("user.dir"));
-            System.out.println("Can read: " + invitation.canRead());
-            System.out.println("Exists: " + invitation.exists());
-            MimeBodyPart invitationMime = new MimeBodyPart();
-            InputStream invitationDS = new FileInputStream(invitation);
-            invitationMime.setFileName(invitationName);
-            invitationMime.setContent(invitationDS, invitationMimeType);
-            System.out.print("Set the content: " + invitationDS) ;
-            Multipart messageMultiPart = new MimeMultipart();
-            //now create the body
-            MimeBodyPart mBody = new MimeBodyPart();
-            mBody.setText(this.getBody());
-            messageMultiPart.addBodyPart(mBody);
-            messageMultiPart.addBodyPart(invitationMime);
-            message.setContent(messageMultiPart);
-            //Transport.send(message, fromAddress, password);
-        }   catch (MessagingException ex) {
-            System.out.println("messsaging exception");
+            email.addTo(this.address);
+        } catch (EmailException ex) {
             Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            System.out.println("message: " + ex.getMessage());
-            //throw new InvitationNotFoundException();
         }
+        try {
+            email.setFrom(fromAddress);
+        } catch (EmailException ex) {
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        email.setSubject(this.subject);
+        try {
+            email.setMsg(this.body);
+        } catch (EmailException ex) {
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            email.attach(attachment);
+        } catch (EmailException ex) {
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            email.send();
+        } catch (EmailException ex) {
+            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
     }
 
     /**

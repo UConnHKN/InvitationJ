@@ -76,45 +76,64 @@ public class MainApp {
      * then path to text to body of email
      * then path to text of subject of email
      * 
-     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt
+     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt fromEmail password existingEmails.csv
      */
     public static void main(String[] args) {
-        InviteeSpreadsheet spreadsheet = null;
-        try {
-            //launch(args);
-            System.out.println("Hello!");
-            spreadsheet = new InviteeSpreadsheet(new File(args[0]));
-            
-        } catch (BadSpreadsheetException ex) {
-            System.out.println("Not a valid spreadsheet. Check your spelling");
+        if(args.length > 7 || args.length < 4){
+            System.out.println("Usage: app.jar spreadsheet.ods invitation.odt body.txt subject.txt existingEmails.csv");
+        }else{
+            InviteeSpreadsheet spreadsheet = null;
+            try {
+                //launch(args);
+                System.out.println("Hello!");
+                spreadsheet = new InviteeSpreadsheet(new File(args[0]));
+
+            } catch (BadSpreadsheetException ex) {
+                System.out.println("Not a valid spreadsheet. Check your spelling");
+            }
+            HashMap<String, String[]> headers = spreadsheet.getHeaders();
+            HashMap<String, Integer> startingRow = new HashMap<String, Integer>();
+            for(String sheetName : headers.keySet()){
+
+
+                startingRow.put(sheetName, 1);
+            }
+            HashMap<String, ColumnVariableMap> columnVarMaps = spreadsheet.getHeaderSpecifiedCVMs();
+            System.out.println("Column var maps: " + columnVarMaps);
+            HashMap<String, String[][]> data = spreadsheet.getAllData(startingRow);
+            PersonSet persons = new PersonSet(columnVarMaps, data);
+            System.out.println("Persons: " + persons);
+            String subjectText = "";
+            try {
+                subjectText = new String(Files.readAllBytes(Paths.get(args[3])), StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                System.out.println("Could not read text from subject file. Check your spelling.");
+            }
+            String bodyText = "";
+            try {
+                bodyText = new String(Files.readAllBytes(Paths.get(args[2])), StandardCharsets.UTF_8);
+            } catch (IOException ex) {
+                System.out.println("Could not read text from body file. Check your spelling.");
+            }
+            if(args.length == 5){
+
+
+                String existingMembersText = null;
+                 try {
+                    existingMembersText = new String(Files.readAllBytes(Paths.get(args[6])), StandardCharsets.UTF_8);
+                } catch (IOException ex) {
+                    System.out.println("Could not read text from existing members file. Check your spelling.");
+                }
+                String[] emails = existingMembersText.split(",");
+                PersonSet existingPersons = new PersonSet(emails);
+                persons.removeAll(existingPersons);
+
+            }
+            System.out.println("arg 4: " + args[4]);
+            System.out.println("Arg 5: " + args[5]);
+            EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", args[4], args[5], "application/pdf", "invitation.pdf");
+            persons.sendEmails(subjectText, bodyText, args[1], eInfo);
         }
-        HashMap<String, String[]> headers = spreadsheet.getHeaders();
-        HashMap<String, Integer> startingRow = new HashMap<String, Integer>();
-        for(String sheetName : headers.keySet()){
-            
-            
-            startingRow.put(sheetName, 1);
-        }
-        HashMap<String, ColumnVariableMap> columnVarMaps = spreadsheet.getHeaderSpecifiedCVMs();
-        System.out.println("Column var maps: " + columnVarMaps);
-        HashMap<String, String[][]> data = spreadsheet.getAllData(startingRow);
-        PersonSet persons = new PersonSet(columnVarMaps, data);
-        System.out.println("Persons: " + persons);
-        String subjectText = "";
-        try {
-            subjectText = new String(Files.readAllBytes(Paths.get(args[3])), StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            System.out.println("Could not read text from subject file. Check your spelling.");
-        }
-        String bodyText = "";
-        try {
-            bodyText = new String(Files.readAllBytes(Paths.get(args[2])), StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            System.out.println("Could not read text from body file. Check your spelling.");
-        }
-        
-        EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", "jordan.force@uconn.edu", "not that dumb", "application/pdf", "invitation.pdf");
-        persons.sendEmails(subjectText, bodyText, args[1], eInfo);
     }
     
 }

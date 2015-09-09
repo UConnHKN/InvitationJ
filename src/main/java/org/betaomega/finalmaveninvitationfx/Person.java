@@ -6,6 +6,7 @@
 package org.betaomega.finalmaveninvitationfx;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -94,10 +95,13 @@ public class Person implements Comparable<Object>{
         String inviteLocation = invite.convertToPDF(eInfo.getConversionCommandTemplate());
         System.out.println("pdf location: " + inviteLocation);
         Email email = new Email(this.columnMap.getEmail(row), subjectTemplate, bodyTemplate, inviteLocation);
-        
+        System.out.println("From address: " + eInfo.getFromAddress());
+        System.out.println("Password: " + eInfo.getPassword());
         try {
             email.send(eInfo.getFromAddress(), eInfo.getPassword(), eInfo.getInviteName(), eInfo.getInvitationMimeType());
         } catch (InvitationNotFoundException ex) {
+            Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
         }
                
