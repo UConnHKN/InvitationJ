@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -76,11 +77,12 @@ public class MainApp {
      * then path to text to body of email
      * then path to text of subject of email
      * 
-     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt fromEmail password existingEmails.csv
+     * 
+     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt fromEmail fromName password existingEmails.csv
      */
     public static void main(String[] args) {
-        if(args.length > 7 || args.length < 4){
-            System.out.println("Usage: app.jar spreadsheet.ods invitation.odt body.txt subject.txt existingEmails.csv");
+        if(args.length > 8 || args.length < 4){
+            System.out.println("Usage: app.jar spreadsheet.ods invitation.odt body.txt subject.txt fromEmail fromName gmailPassword existingEmails.csv. \n Don't forget, that if you have a name with a space in it, you need to escape the space (such as 'Jordan\\ Force'");
         }else{
             InviteeSpreadsheet spreadsheet = null;
             try {
@@ -115,12 +117,12 @@ public class MainApp {
             } catch (IOException ex) {
                 System.out.println("Could not read text from body file. Check your spelling.");
             }
-            if(args.length == 5){
+            if(args.length == 8){
 
-
+                
                 String existingMembersText = null;
                  try {
-                    existingMembersText = new String(Files.readAllBytes(Paths.get(args[6])), StandardCharsets.UTF_8);
+                    existingMembersText = new String(Files.readAllBytes(Paths.get(args[7])), StandardCharsets.UTF_8);
                 } catch (IOException ex) {
                     System.out.println("Could not read text from existing members file. Check your spelling.");
                 }
@@ -131,7 +133,7 @@ public class MainApp {
             }
             System.out.println("arg 4: " + args[4]);
             System.out.println("Arg 5: " + args[5]);
-            EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", args[4], args[5], "application/pdf", "invitation.pdf");
+            EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", args[4], args[5], args[6], "application/pdf", "invitation.pdf");
             persons.sendEmails(subjectText, bodyText, args[1], eInfo);
         }
     }

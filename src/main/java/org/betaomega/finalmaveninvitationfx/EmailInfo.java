@@ -15,12 +15,14 @@ public class EmailInfo {
     private String password;
     private String invitationMimeType;
     private String inviteName;
-    public EmailInfo(String conversionCommandTemplate, String fromAddress, String password, String invitationMimeType, String inviteName){
+    private String fromName;
+    public EmailInfo(String conversionCommandTemplate, String fromAddress, String fromName, String password, String invitationMimeType, String inviteName){
         this.setConversionCommandTemplate(conversionCommandTemplate);
         this.setFromAddress(fromAddress);
         this.setPassword(password);
         this.setInvitationMimeType(invitationMimeType);
         this.setInviteName(inviteName);
+        this.setFromName(fromName);
     }
 
     /**
@@ -91,5 +93,19 @@ public class EmailInfo {
      */
     public void setInviteName(String inviteName) {
         this.inviteName = inviteName;
+    }
+
+    /**
+     * @return the fromName
+     */
+    public String getFromName() {
+        return fromName;
+    }
+
+    /**
+     * @param fromName the fromName to set
+     */
+    public void setFromName(String fromName) {
+        this.fromName = fromName;
     }
 }

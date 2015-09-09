@@ -98,7 +98,7 @@ public class Person implements Comparable<Object>{
         System.out.println("From address: " + eInfo.getFromAddress());
         System.out.println("Password: " + eInfo.getPassword());
         try {
-            email.send(eInfo.getFromAddress(), eInfo.getPassword(), eInfo.getInviteName(), eInfo.getInvitationMimeType());
+            email.send(eInfo.getFromAddress(), eInfo.getFromName(), eInfo.getPassword(), eInfo.getInviteName(), eInfo.getInvitationMimeType());
         } catch (InvitationNotFoundException ex) {
             Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {

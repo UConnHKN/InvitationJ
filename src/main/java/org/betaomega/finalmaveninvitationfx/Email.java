@@ -65,7 +65,7 @@ public class Email {
         this.invitationPath = invitationPath;
         
     }
-    public void send(String fromAddress, String password, String invitationName, String invitationMimeType) throws InvitationNotFoundException, UnsupportedEncodingException
+    public void send(String fromAddress, String fromName, String password, String invitationName, String invitationMimeType) throws InvitationNotFoundException, UnsupportedEncodingException
     
   {
         EmailAttachment attachment = new EmailAttachment();
@@ -81,14 +81,13 @@ public class Email {
 
 
         email.setTLS(true);
-        email.setHostName("smtp.gmail.com");
         try {
             email.addTo(this.address);
         } catch (EmailException ex) {
             Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
-            email.setFrom(fromAddress);
+            email.setFrom(fromAddress, fromName);
         } catch (EmailException ex) {
             Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
         }
