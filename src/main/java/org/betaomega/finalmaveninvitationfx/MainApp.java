@@ -96,8 +96,10 @@ public class MainApp {
             startingRow.put(sheetName, 1);
         }
         HashMap<String, ColumnVariableMap> columnVarMaps = spreadsheet.getHeaderSpecifiedCVMs();
+        System.out.println("Column var maps: " + columnVarMaps);
         HashMap<String, String[][]> data = spreadsheet.getAllData(startingRow);
         PersonSet persons = new PersonSet(columnVarMaps, data);
+        System.out.println("Persons: " + persons);
         String subjectText = "";
         try {
             subjectText = new String(Files.readAllBytes(Paths.get(args[3])), StandardCharsets.UTF_8);

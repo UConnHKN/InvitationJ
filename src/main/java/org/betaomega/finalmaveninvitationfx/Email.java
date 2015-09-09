@@ -75,12 +75,18 @@ public class Email {
             message.setFrom(new InternetAddress(fromAddress));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(this.address));
             message.setSubject(this.getSubject());
+            System.out.println("Invitation path: " + this.invitationPath);
+            this.invitationPath = "thing1524829128976613409.pdf";
             File invitation = new File(this.invitationPath);
-            
+            System.out.println("Invitation file: " + invitation.getAbsolutePath());
+            System.out.println("Current dir: " + System.getProperty("user.dir"));
+            System.out.println("Can read: " + invitation.canRead());
+            System.out.println("Exists: " + invitation.exists());
             MimeBodyPart invitationMime = new MimeBodyPart();
             InputStream invitationDS = new FileInputStream(invitation);
             invitationMime.setFileName(invitationName);
             invitationMime.setContent(invitationDS, invitationMimeType);
+            System.out.print("Set the content: " + invitationDS) ;
             Multipart messageMultiPart = new MimeMultipart();
             //now create the body
             MimeBodyPart mBody = new MimeBodyPart();
@@ -88,11 +94,13 @@ public class Email {
             messageMultiPart.addBodyPart(mBody);
             messageMultiPart.addBodyPart(invitationMime);
             message.setContent(messageMultiPart);
-            Transport.send(message, fromAddress, password);
+            //Transport.send(message, fromAddress, password);
         }   catch (MessagingException ex) {
+            System.out.println("messsaging exception");
             Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
         } catch (FileNotFoundException ex) {
-            throw new InvitationNotFoundException();
+            System.out.println("message: " + ex.getMessage());
+            //throw new InvitationNotFoundException();
         }
     }
 

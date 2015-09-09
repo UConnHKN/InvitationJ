@@ -65,15 +65,22 @@ public class Invitation {
             Here we will us the simple API to create a new instance of the TextNavigation class
             for each keyword, which will be used to find and replace the keywords with their values
         */
+        System.out.println("Going to replace keywords: " + keyToValueMappings);
         for(String key : keyToValueMappings.keySet()){
+            System.out.println("Key: " + key);
+            
             String value = keyToValueMappings.get(key);
+            System.out.println("Value: " + value);
             TextNavigation navigation = new TextNavigation(key, this.invitationTemplate);
             boolean hasNext = true;
             while(hasNext){
+               
                 TextSelection selection = (TextSelection) navigation.nextSelection();
+                System.out.println("Replacing selection: " + selection);
                 try {
                     selection.replaceWith(value);
                 } catch (InvalidNavigationException ex) {
+                    System.out.println("Couldn't do replacemen");
                     Logger.getLogger(Invitation.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 hasNext = navigation.hasNext();
@@ -82,6 +89,7 @@ public class Invitation {
         try {
             this.invitationTemplate.save(this.tempOutputFile);
         } catch (Exception ex) {
+            System.out.println("Couldn't save the changed odt");
             Logger.getLogger(Invitation.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -98,15 +106,22 @@ public class Invitation {
     public String convertToPDF(String conversionCommandTemplate){
         //our modified, temporary ODT file.
         String odtPath = this.tempOutputFile.getAbsolutePath();
+        String name = this.tempOutputFile.getName();
+        System.out.println("odfpath: " + odtPath);
+       
         String command = conversionCommandTemplate + " " + odtPath;
+        System.out.println("Command: "+ command);
         try {
-            Runtime.getRuntime().exec(command);
+            Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
         } catch (IOException ex) {
             System.out.println("Exception occurred:");
             ex.printStackTrace();
             System.exit(-1);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Invitation.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return odtPath.replace(".odt", ".pdf");
+        return name.replace(".odt", ".pdf");
     }
     /**
      * @return the invitationTemplate

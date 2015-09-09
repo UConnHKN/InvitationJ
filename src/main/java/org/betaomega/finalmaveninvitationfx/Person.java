@@ -6,6 +6,7 @@
 package org.betaomega.finalmaveninvitationfx;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -54,7 +55,7 @@ public class Person implements Comparable<Object>{
      * @return the email
      */
     public String getEmail() {
-        return email;
+        return this.email;
     }
 
     /**
@@ -65,10 +66,11 @@ public class Person implements Comparable<Object>{
     }
     @Override
     public String toString(){
-       return this.email; 
+       return "email: " + this.getEmail(); 
     }
     
     public void sendEmail(String subjectTemplate, String bodyTemplate, String invitationPath, EmailInfo eInfo){
+        System.out.println("Going to send email");
         HashMap<String, String> subjectVariables = this.columnMap.getSubjectVariableValues(this.row);
         
         for(String variableName : subjectVariables.keySet()){
@@ -86,14 +88,19 @@ public class Person implements Comparable<Object>{
         } catch (BadTemplateException ex) {
             Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Row in the person class: " + Arrays.toString(this.row));
+        System.out.println("Invitation values: " + this.columnMap.getInvitationValues(this.row));
         invite.replaceKeywords(this.columnMap.getInvitationValues(this.row));
         String inviteLocation = invite.convertToPDF(eInfo.getConversionCommandTemplate());
+        System.out.println("pdf location: " + inviteLocation);
         Email email = new Email(this.columnMap.getEmail(row), subjectTemplate, bodyTemplate, inviteLocation);
+        
         try {
             email.send(eInfo.getFromAddress(), eInfo.getPassword(), eInfo.getInviteName(), eInfo.getInvitationMimeType());
         } catch (InvitationNotFoundException ex) {
             Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
         }
+               
         
         
     }

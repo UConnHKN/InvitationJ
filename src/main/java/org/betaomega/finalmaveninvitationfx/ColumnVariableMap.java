@@ -47,6 +47,10 @@ public class ColumnVariableMap {
     public String getEmail(String[] row){
         return row[this.getEmailIndex()];
     }
+    @Override
+    public String toString(){
+        return "CVM with email index: " + String.valueOf(this.emailIndex) + ", subject map: " + String.valueOf(this.subjectMap) + ", body map: " + String.valueOf(this.bodyMap) + ", invitation map: " + String.valueOf(this.invitationMap);
+    }
     public HashMap<String, String> getSubjectVariableValues(String[] row){
         HashMap<String, String> values = new HashMap<String, String>();
         for(String key : this.subjectMap.keySet()){
@@ -65,8 +69,11 @@ public class ColumnVariableMap {
     }
     public HashMap<String, String> getInvitationValues(String[] row){
         HashMap<String, String> values = new HashMap<String, String>();
+        System.out.println("keyset of invitation map: " + this.invitationMap.keySet());
         for(String key : this.invitationMap.keySet()){
+            System.out.println("Key in cvm value getter: " + key);
             int index = (int) this.invitationMap.get(key);
+            System.out.println("Index in cvm value getter: " + String.valueOf(index));
             values.put(key, row[index]);
         }
         return values;

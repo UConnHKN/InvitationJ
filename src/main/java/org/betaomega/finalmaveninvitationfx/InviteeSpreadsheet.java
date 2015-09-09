@@ -135,7 +135,8 @@ public class InviteeSpreadsheet {
                             }else if(halves[0].equals("BODY")){
                                 bodyMap.put(halves[1], columnIndex);
                             }else if(halves[0].equals("INVITATION")){
-                                bodyMap.put(halves[1], columnIndex);
+                                System.out.println("There is an invitation part");
+                                invitationMap.put(halves[1], columnIndex);
                             }else{
                                 //DO SOMETHING BAD HERE!
                             }
