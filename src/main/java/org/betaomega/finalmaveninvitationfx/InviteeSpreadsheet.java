@@ -89,6 +89,24 @@ public class InviteeSpreadsheet {
         System.out.println("Goodbye!");
         return tempMap;
     }
+    //gets first row of each sheet.
+    public HashMap<String, String[]> getHeaders(){
+        HashMap<String, String[]> headers = new HashMap<String, String[]>();
+        Row header;
+        String[] temp;
+        for(String sheetName : this.getSheetNames()){
+            Table sheet = this.spreadsheet.getSheetByName(sheetName);
+            int numColumns = sheet.getColumnCount();
+            List<Row> rows = sheet.getRowList();
+            header = rows.get(0);
+            temp = new String[numColumns];
+            for(int i = 0; i < numColumns; i++){
+                temp[i] = header.getCellByIndex(i).getStringValue();
+            }
+            headers.put(sheetName, temp);
+        }
+        return headers;
+    }
     
     public String[] getSheetNames(){
         //first, get the number of sheets in the spreadsheet. We'll iterate from [0, 1, ..., n - 1], and get the name of each sheet.
@@ -100,5 +118,8 @@ public class InviteeSpreadsheet {
         }
         return sheetNames;
     } 
-    
+ 
+    public static ColumnVariableMap getHeaderInfo(String[] row){
+        
+    }
 }

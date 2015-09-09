@@ -5,7 +5,11 @@
  */
 package org.betaomega.finalmaveninvitationfx;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -20,8 +24,10 @@ import javafx.stage.Stage;
  *
  * @author Jordan Force
  */
-public class MainApp extends Application {
-    
+
+
+public class MainApp {
+    /*
     private Stage primaryStage;
 
     @Override
@@ -29,10 +35,12 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         initFirstStep();
     }
+    */
 
     /**
      * Initializes the root layout.
      */
+/*
     public void initFirstStep() {
         try {
             // Load root layout from fxml file.
@@ -46,19 +54,42 @@ public class MainApp extends Application {
             e.printStackTrace();
         }
     }
-
+*/
     
 
-    
+    /*
     public Stage getPrimaryStage() {
         return primaryStage;
     }
+*/
     /**
      * @param args the command line arguments
+     * 
+     * First spreadsheet
+     * Then invitation file
+     * then path to text to body of email
+     * then path to text of subject of email
+     * 
+     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt
      */
     public static void main(String[] args) {
-        //launch(args);
-        System.out.println("Hello!");
+        InviteeSpreadsheet spreadsheet = null;
+        try {
+            //launch(args);
+            System.out.println("Hello!");
+            spreadsheet = new InviteeSpreadsheet(new File(args[0]));
+            
+        } catch (BadSpreadsheetException ex) {
+            System.out.println("Not a valid spreadsheet. Check your spelling");
+        }
+        HashMap<String, String[]> headers = spreadsheet.getHeaders();
+        HashMap<String, Integer> startingRow = new HashMap<String, Integer>();
+        for(String sheetName : headers.keySet()){
+            
+            
+            startingRow.put(sheetName, 1);
+        }
+        //now, for each of the 
     }
     
 }

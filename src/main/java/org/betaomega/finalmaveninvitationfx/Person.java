@@ -5,15 +5,22 @@
  */
 package org.betaomega.finalmaveninvitationfx;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Jordan Force
  */
 public class Person implements Comparable<Object>{
     private String email;
+    private ColumnVariableMap columnMap;
     private String[] row;
     public Person(ColumnVariableMap columnMap, String[] row){
         this.setEmail(columnMap.getEmail(row));
+        this.columnMap = columnMap;
         this.row = row;
     }
     public Person(String email){
@@ -59,5 +66,35 @@ public class Person implements Comparable<Object>{
     @Override
     public String toString(){
        return this.email; 
+    }
+    
+    public void sendEmail(String subjectTemplate, String bodyTemplate, String invitationPath, EmailInfo eInfo){
+        HashMap<String, String> subjectVariables = this.columnMap.getSubjectVariableValues(this.row);
+        
+        for(String variableName : subjectVariables.keySet()){
+            subjectTemplate = subjectTemplate.replaceAll(variableName, subjectVariables.get(variableName));
+        }
+        
+        HashMap<String, String> bodyVariables = this.columnMap.getBodyVariableValues(this.row);
+        
+        for(String variableName : bodyVariables.keySet()){
+            bodyTemplate = bodyTemplate.replaceAll(variableName, bodyVariables.get(variableName));
+        }
+        Invitation invite = null;
+        try {
+            invite = new Invitation(new File(invitationPath));
+        } catch (BadTemplateException ex) {
+            Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        invite.replaceKeywords(this.columnMap.getInvitationValues(this.row));
+        String inviteLocation = invite.convertToPDF(eInfo.getConversionCommandTemplate());
+        Email email = new Email(this.columnMap.getEmail(row), subjectTemplate, bodyTemplate, inviteLocation);
+        try {
+            email.send(eInfo.getFromAddress(), eInfo.getPassword(), eInfo.getInviteName(), eInfo.getInvitationMimeType());
+        } catch (InvitationNotFoundException ex) {
+            Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }
 }

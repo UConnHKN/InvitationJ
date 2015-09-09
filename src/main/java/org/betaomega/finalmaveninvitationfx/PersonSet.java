@@ -20,13 +20,11 @@ public class PersonSet extends HashSet {
     */
     public PersonSet(HashMap<String, ColumnVariableMap> sheetToCVPMap, HashMap<String, String[][]> spreadsheetData){
         for(String sheetName : spreadsheetData.keySet()){
-            System.out.println("Sheetname: " + sheetName);
             
             ColumnVariableMap cvp = sheetToCVPMap.get(sheetName);
             String[][] sheetData = spreadsheetData.get(sheetName);
             for(String[] row : sheetData){
                 Person p = new Person(cvp, row);
-                System.out.println("Person to add: " + p.toString());
                 this.add(p);
             }
         }
@@ -50,5 +48,12 @@ public class PersonSet extends HashSet {
             addresses.add(((Person) iter.next()).getEmail());
         }
         return addresses;
+    }
+    public void sendEmails(String subjectTemplate, String bodyTemplate, String invitationPath, EmailInfo eInfo){
+        Iterator<Person> iter = this.iterator();
+        while(iter.hasNext()){
+            Person p = iter.next();
+            p.sendEmail(subjectTemplate, bodyTemplate, invitationPath, eInfo);
+        }
     }
 }
