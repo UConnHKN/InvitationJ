@@ -20,7 +20,7 @@ public class PersonSet extends HashSet {
     */
     public PersonSet(HashMap<String, ColumnVariableMap> sheetToCVPMap, HashMap<String, String[][]> spreadsheetData){
         for(String sheetName : spreadsheetData.keySet()){
-            
+            System.out.println("sheet name: " + sheetName);
             ColumnVariableMap cvp = sheetToCVPMap.get(sheetName);
             String[][] sheetData = spreadsheetData.get(sheetName);
             for(String[] row : sheetData){

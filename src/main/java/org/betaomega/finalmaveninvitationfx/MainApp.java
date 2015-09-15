@@ -133,6 +133,8 @@ public class MainApp {
             }
             System.out.println("arg 4: " + args[4]);
             System.out.println("Arg 5: " + args[5]);
+            
+            
             EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", args[4], args[5], args[6], "application/pdf", "invitation.pdf");
             persons.sendEmails(subjectText, bodyText, args[1], eInfo);
         }

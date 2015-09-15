@@ -26,6 +26,7 @@ package org.betaomega.finalmaveninvitationfx;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.odftoolkit.simple.TextDocument;
@@ -82,6 +83,25 @@ public class Invitation {
                 } catch (InvalidNavigationException ex) {
                     System.out.println("Couldn't do replacemen");
                     Logger.getLogger(Invitation.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (NullPointerException ex ){
+                    /*
+                        There is a mapping in the spreadsheet that isn't used in the invitation.
+                    
+                    This could be an error on the user's part, in which case we'd want to let them know.
+                    
+                    We should ask them whether or not to continue.
+                    
+                    */
+                    Scanner in = new Scanner(System.in);
+                    System.out.print("Apparently the replacement: " + value + " Isn't used in the invitation. Continue (y/N)? ");
+                    String line = in.nextLine();
+                    if(!line.equals("y")){
+                        //then the user did not want to continue
+                        System.out.println("Aborting program");
+                        this.invitationTemplate.close();
+                        System.exit(1);
+                    }
+                    
                 }
                 hasNext = navigation.hasNext();
             }

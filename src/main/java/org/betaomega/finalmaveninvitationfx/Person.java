@@ -71,7 +71,7 @@ public class Person implements Comparable<Object>{
     }
     
     public void sendEmail(String subjectTemplate, String bodyTemplate, String invitationPath, EmailInfo eInfo){
-        System.out.println("Going to send email");
+        System.out.println("Going to send email. Invitation path: " + invitationPath);
         HashMap<String, String> subjectVariables = this.columnMap.getSubjectVariableValues(this.row);
         
         for(String variableName : subjectVariables.keySet()){
