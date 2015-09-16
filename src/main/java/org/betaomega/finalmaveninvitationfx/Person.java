@@ -34,7 +34,7 @@ public class Person implements Comparable<Object>{
             return 0;
         }else{
             Person p = (Person) t;
-            return this.getEmail().compareTo(p.getEmail());
+            return this.getEmail().toLowerCase().compareTo(p.getEmail());
         }
     }
     
@@ -44,12 +44,12 @@ public class Person implements Comparable<Object>{
             return false;
         }else{
             Person p = (Person) t;
-            return this.getEmail().equals(p.getEmail());
+            return this.getEmail().equalsIgnoreCase(p.getEmail());
         }
     }
     @Override
     public int hashCode(){
-        return this.getEmail().hashCode();
+        return this.getEmail().toLowerCase().hashCode();
     }
 
     /**
@@ -63,7 +63,7 @@ public class Person implements Comparable<Object>{
      * @param email the email to set
      */
     public void setEmail(String email) {
-        this.email = email;
+        this.email = email.trim();
     }
     @Override
     public String toString(){
