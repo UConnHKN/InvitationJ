@@ -57,6 +57,26 @@ public class Invitation {
         }
     }
     
+    private void closeLibreOffice(){
+        //I'm putting in both commands, just in case the process name of libreoffice changes in the future.
+        String command = "pkill soffice";
+        try {
+            Process p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+        } catch (IOException ex) {
+           System.out.println("Something wrong with closing libreoffice");
+        } catch (InterruptedException ex) {
+            System.out.println("Something wrong with closing libreoffice");
+        }   
+        String secondCommand = "pkill libreoffice";
+        try {
+            Process p = Runtime.getRuntime().exec(secondCommand);
+            p.waitFor();
+        } catch (IOException ex) {
+           
+        } catch (InterruptedException ex) {
+        }
+    }
     /*
     
     THIS DOES NOT CHANGE THE ACTUAL TEMPLATE FILE! IT ONLY SAVES TO A TEMPORARY SPOT!
@@ -124,6 +144,7 @@ public class Invitation {
     This returns the location of the PDF
     */
     public String convertToPDF(String conversionCommandTemplate){
+        this.closeLibreOffice();
         //our modified, temporary ODT file.
         String odtPath = this.tempOutputFile.getAbsolutePath();
         String name = this.tempOutputFile.getName();
