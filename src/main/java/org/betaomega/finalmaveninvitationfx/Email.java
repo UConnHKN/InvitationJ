@@ -58,56 +58,18 @@ public class Email {
     private String subject;
     private String body;
     private String invitationPath;
-    public Email(String address, String subject, String body, String invitationPath){
+    EmailProvider provider;
+    public Email(String address, String subject, String body, String invitationPath, EmailProvider provider){
         this.address = address;
         this.subject = subject;
         this.body = body;
         this.invitationPath = invitationPath;
-        
+        this.provider = provider;
     }
-    public void send(String fromAddress, String fromName, String password, String invitationName, String invitationMimeType) throws InvitationNotFoundException, UnsupportedEncodingException
+    public void send(String invitationName, String invitationMimeType) throws InvitationNotFoundException, UnsupportedEncodingException
     
   {
-        EmailAttachment attachment = new EmailAttachment();
-        attachment.setPath(this.invitationPath);
-        attachment.setDisposition(EmailAttachment.ATTACHMENT);
-        attachment.setName(invitationName);
-        MultiPartEmail email = new MultiPartEmail();
-        email.setHostName("smtp.gmail.com");
-        email.setSmtpPort(587);
-        email.setAuthenticator(new DefaultAuthenticator(fromAddress, password));
-        email.setStartTLSEnabled(true);
-        
-
-
-        email.setTLS(true);
-        try {
-            email.addTo(this.address);
-        } catch (EmailException ex) {
-            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            email.setFrom(fromAddress, fromName);
-        } catch (EmailException ex) {
-            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        email.setSubject(this.subject);
-        try {
-            email.setMsg(this.body);
-        } catch (EmailException ex) {
-            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            email.attach(attachment);
-        } catch (EmailException ex) {
-            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            email.send();
-        } catch (EmailException ex) {
-            Logger.getLogger(Email.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+      this.provider.send(this.address, this.subject, this.body, invitationName, this.invitationPath, invitationMimeType);
     }
 
     /**

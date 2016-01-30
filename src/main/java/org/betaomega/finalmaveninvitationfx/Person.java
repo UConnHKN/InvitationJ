@@ -94,11 +94,10 @@ public class Person implements Comparable<Object>{
         invite.replaceKeywords(this.columnMap.getInvitationValues(this.row));
         String inviteLocation = invite.convertToPDF(eInfo.getConversionCommandTemplate());
         System.out.println("pdf location: " + inviteLocation);
-        Email email = new Email(this.columnMap.getEmail(row), subjectTemplate, bodyTemplate, inviteLocation);
+        Email email = new Email(this.columnMap.getEmail(row), subjectTemplate, bodyTemplate, inviteLocation, eInfo.getProvider());
         System.out.println("From address: " + eInfo.getFromAddress());
-        System.out.println("Password: " + eInfo.getPassword());
         try {
-            email.send(eInfo.getFromAddress(), eInfo.getFromName(), eInfo.getPassword(), eInfo.getInviteName(), eInfo.getInvitationMimeType());
+            email.send(eInfo.getInviteName(), eInfo.getInvitationMimeType());
         } catch (InvitationNotFoundException ex) {
             Logger.getLogger(Person.class.getName()).log(Level.SEVERE, null, ex);
         } catch (UnsupportedEncodingException ex) {

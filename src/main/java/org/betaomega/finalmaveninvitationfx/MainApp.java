@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,65 +79,82 @@ public class MainApp {
      * then path to text of subject of email
      * 
      * 
-     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt fromEmail fromName password existingEmails.csv
+     * so app.jar spreadsheet.ods invitation.odt body.txt subject.txt existingEmails.csv
      */
     public static void main(String[] args) {
-        if(args.length > 8 || args.length < 4){
-            System.out.println("Usage: app.jar spreadsheet.ods invitation.odt body.txt subject.txt fromEmail fromName gmailPassword existingEmails.csv. \n Don't forget, that if you have a name with a space in it, you need to escape the space (such as 'Jordan\\ Force'");
+        if(args.length != 5){
+            System.out.println("Usage: app.jar spreadsheet.ods invitation.odt body.txt subject.txt existingEmails.csv. \n Don't forget, that if you have a name with a space in it, you need to escape the space (such as 'Jordan\\ Force'");
         }else{
-            InviteeSpreadsheet spreadsheet = null;
-            try {
-                //launch(args);
-                System.out.println("Hello!");
-                spreadsheet = new InviteeSpreadsheet(new File(args[0]));
-
-            } catch (BadSpreadsheetException ex) {
-                System.out.println("Not a valid spreadsheet. Check your spelling");
+            
+            Scanner scan = new Scanner(System.in);
+            System.out.println("Exchange (1), Gmail (2) or other email provider(3)?");
+            int option = 0;
+            try{
+                option = scan.nextInt();
+            }catch(java.util.InputMismatchException m){
+               System.out.println("Invalid input. Enter in 1, 2, or 3.");
+               main(args);
             }
-            HashMap<String, String[]> headers = spreadsheet.getHeaders();
-            HashMap<String, Integer> startingRow = new HashMap<String, Integer>();
-            for(String sheetName : headers.keySet()){
+            
+            if(option != 1 && option != 2 && option != 3){
+                System.out.println("Invalid option. Enter in 1, 2 or 3.");
+                main(args);
+            }else{
+            
+                InviteeSpreadsheet spreadsheet = null;
+                try {
+                    //launch(args);
+                    System.out.println("Hello!");
+                    spreadsheet = new InviteeSpreadsheet(new File(args[0]));
 
-
-                startingRow.put(sheetName, 1);
-            }
-            HashMap<String, ColumnVariableMap> columnVarMaps = spreadsheet.getHeaderSpecifiedCVMs();
-            System.out.println("Column var maps: " + columnVarMaps);
-            HashMap<String, String[][]> data = spreadsheet.getAllData(startingRow);
-            PersonSet persons = new PersonSet(columnVarMaps, data);
-            System.out.println("Persons: " + persons);
-            String subjectText = "";
-            try {
-                subjectText = new String(Files.readAllBytes(Paths.get(args[3])), StandardCharsets.UTF_8);
-            } catch (IOException ex) {
-                System.out.println("Could not read text from subject file. Check your spelling.");
-            }
-            String bodyText = "";
-            try {
-                bodyText = new String(Files.readAllBytes(Paths.get(args[2])), StandardCharsets.UTF_8);
-            } catch (IOException ex) {
-                System.out.println("Could not read text from body file. Check your spelling.");
-            }
-            if(args.length == 8){
-
-                
-                String existingMembersText = null;
-                 try {
-                    existingMembersText = new String(Files.readAllBytes(Paths.get(args[7])), StandardCharsets.UTF_8);
-                } catch (IOException ex) {
-                    System.out.println("Could not read text from existing members file. Check your spelling.");
+                } catch (BadSpreadsheetException ex) {
+                    System.out.println("Not a valid spreadsheet. Check your spelling");
                 }
-                String[] emails = existingMembersText.split(",");
-                PersonSet existingPersons = new PersonSet(emails);
-                persons.removeAll(existingPersons);
+                HashMap<String, String[]> headers = spreadsheet.getHeaders();
+                HashMap<String, Integer> startingRow = new HashMap<String, Integer>();
+                for(String sheetName : headers.keySet()){
 
+
+                    startingRow.put(sheetName, 1);
+                }
+                HashMap<String, ColumnVariableMap> columnVarMaps = spreadsheet.getHeaderSpecifiedCVMs();
+                System.out.println("Column var maps: " + columnVarMaps);
+                HashMap<String, String[][]> data = spreadsheet.getAllData(startingRow);
+                PersonSet persons = new PersonSet(columnVarMaps, data);
+                System.out.println("Persons: " + persons);
+                String subjectText = "";
+                try {
+                    subjectText = new String(Files.readAllBytes(Paths.get(args[3])), StandardCharsets.UTF_8);
+                } catch (IOException ex) {
+                    System.out.println("Could not read text from subject file. Check your spelling.");
+                }
+                String bodyText = "";
+                try {
+                    bodyText = new String(Files.readAllBytes(Paths.get(args[2])), StandardCharsets.UTF_8);
+                } catch (IOException ex) {
+                    System.out.println("Could not read text from body file. Check your spelling.");
+                }
+                if(args.length == 8){
+
+
+                    String existingMembersText = null;
+                     try {
+                        existingMembersText = new String(Files.readAllBytes(Paths.get(args[7])), StandardCharsets.UTF_8);
+                    } catch (IOException ex) {
+                        System.out.println("Could not read text from existing members file. Check your spelling.");
+                    }
+                    String[] emails = existingMembersText.split(",");
+                    PersonSet existingPersons = new PersonSet(emails);
+                    persons.removeAll(existingPersons);
+
+                }
+                System.out.println("arg 4: " + args[4]);
+                System.out.println("Arg 5: " + args[5]);
+
+
+                EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", option, "application/pdf", "invitation.pdf");
+                persons.sendEmails(subjectText, bodyText, args[1], eInfo);
             }
-            System.out.println("arg 4: " + args[4]);
-            System.out.println("Arg 5: " + args[5]);
-            
-            
-            EmailInfo eInfo = new EmailInfo("libreoffice --headless --convert-to pdf ", args[4], args[5], args[6], "application/pdf", "invitation.pdf");
-            persons.sendEmails(subjectText, bodyText, args[1], eInfo);
         }
     }
     

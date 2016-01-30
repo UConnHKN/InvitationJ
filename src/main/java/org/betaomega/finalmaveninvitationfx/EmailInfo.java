@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package org.betaomega.finalmaveninvitationfx;
+import java.util.Scanner;
 
 /**
  *
@@ -12,19 +13,36 @@ package org.betaomega.finalmaveninvitationfx;
 public class EmailInfo {
     private String conversionCommandTemplate;
     private String fromAddress;
-    private String password;
     private String invitationMimeType;
     private String inviteName;
     private String fromName;
-    public EmailInfo(String conversionCommandTemplate, String fromAddress, String fromName, String password, String invitationMimeType, String inviteName){
+    private EmailProvider provider;
+    public EmailInfo(String conversionCommandTemplate, int option, String invitationMimeType, String inviteName){
         this.setConversionCommandTemplate(conversionCommandTemplate);
-        this.setFromAddress(fromAddress);
-        this.setPassword(password);
+        
+        if(option == 1){
+            //Then exchange
+            System.out.println("Exchange is not currently supported. It will be in the future, though.");
+            System.exit(1);
+        }else if(option == 2){
+            System.out.println("Enter in email address: ");
+            Scanner scan = new Scanner(System.in);
+            String email = scan.next();
+            this.setFromAddress(email);
+            System.out.println("Enter in password: ");
+            String password = scan.next();
+            System.out.println("Enter in name: ");
+            String fromName = scan.next();
+            this.setFromName(fromName);
+            EmailProvider gmail = new GmailProvider(email, fromName, password);
+       }else{
+            System.out.println("Other email systems are not supported at this time.");
+            System.exit(1);
+        }
+        
         this.setInvitationMimeType(invitationMimeType);
         this.setInviteName(inviteName);
-        this.setFromName(fromName);
     }
-
     /**
      * @return the conversionCommandTemplate
      */
@@ -53,20 +71,8 @@ public class EmailInfo {
         this.fromAddress = fromAddress;
     }
 
-    /**
-     * @return the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * @param password the password to set
-     */
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
+    
+  
     /**
      * @return the invitationMimeType
      */
@@ -107,5 +113,19 @@ public class EmailInfo {
      */
     public void setFromName(String fromName) {
         this.fromName = fromName;
+    }
+
+    /**
+     * @return the provider
+     */
+    public EmailProvider getProvider() {
+        return provider;
+    }
+
+    /**
+     * @param provider the provider to set
+     */
+    public void setProvider(EmailProvider provider) {
+        this.provider = provider;
     }
 }
