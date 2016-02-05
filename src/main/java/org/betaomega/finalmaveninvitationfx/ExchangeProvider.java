@@ -8,7 +8,8 @@ package org.betaomega.finalmaveninvitationfx;
 import java.io.UnsupportedEncodingException;
 import microsoft.exchange.webservices.data.core.*;
 import microsoft.exchange.webservices.data.credential.*;
-
+import microsoft.exchange.webservices.data.core.service.item.EmailMessage;
+import microsoft.exchange.webservices.data.property.complex.MessageBody;
 
 /**
  * 
@@ -31,7 +32,18 @@ public class ExchangeProvider implements EmailProvider{
     }
     
     public void send(String address, String subject, String body, String invitationName, String invitationPath, String invitationMimeType) throws InvitationNotFoundException, UnsupportedEncodingException{
-      
+        EmailMessage message;
+        try{
+            message = new EmailMessage(this.service);
+            message.setSubject(subject);
+            message.setBody(MessageBody.getMessageBodyFromText(body));
+            message.getToRecipients().add(address);
+            message.getAttachments().addFileAttachment(invitationPath);
+            message.send();
+        }catch(Exception e){
+            System.out.println("There was an exception");
+        }
+        
     }
 
 }
